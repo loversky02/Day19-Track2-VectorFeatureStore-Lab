@@ -150,6 +150,13 @@ print({k: v[0] for k, v in features.items()})
 # ## 5. TODO — Batch latency benchmark (100 lookups, P99)
 
 # %%
+# Warmup — SQLite connections are lazy; first few calls hit connection setup
+for _ in range(10):
+    fs.get_online_features(
+        features=REQUEST_FEATURES,
+        entity_rows=[{"user_id": "u_000"}],
+    )
+
 latencies: list[float] = []
 for i in range(100):
     user_id = f"u_{i:03d}"
@@ -185,7 +192,7 @@ else:
 import pandas as pd
 entity_df = pd.DataFrame({
     "user_id": ["u_001", "u_002", "u_003"],
-    "event_timestamp": [NOW - timedelta(hours=2), NOW - timedelta(hours=1), NOW],
+    "event_timestamp": [NOW, NOW, NOW],
 })
 
 historical = fs.get_historical_features(

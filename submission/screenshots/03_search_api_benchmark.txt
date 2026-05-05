@@ -1,0 +1,40 @@
+======================================================================
+  Notebook: 03_search_api_benchmark.ipynb
+======================================================================
+
+╔══ CELL 0 — NB3 — FastAPI `/search` Endpoint + Latency Benchmark
+
+╔══ CELL 2 — 1. Khởi động API server (background)
+
+┌── CELL 3 (code)
+{'ready': True, 'n_docs': 1000}
+
+╔══ CELL 4 — 2. Single query — kiểm tra response shape
+
+┌── CELL 5 (code)
+latency_ms: 15.4
+top-3 hits:
+       cloud_016  score=0.0325  Điện toán đám mây: tự động mở rộng theo lưu lượng
+       cloud_072  score=0.0323  Điện toán đám mây: tự động mở rộng theo lưu lượng
+       cloud_053  score=0.0315  Điện toán đám mây: tự động mở rộng theo lưu lượng
+
+╔══ CELL 6 — 3. TODO — Latency benchmark (100 queries × 3 modes)
+
+┌── CELL 7 (code)
+  mode            P50      P95      P99  P99(wall)
+  keyword       1.4ms    2.3ms    2.7ms     48.6ms
+  semantic      9.6ms   20.2ms   30.0ms     80.7ms
+  hybrid       12.4ms   22.9ms   39.7ms    112.1ms
+
+╔══ CELL 8 — 4. Rubric assertion — hybrid P99 server-side < 50ms
+
+┌── CELL 9 (code)
+Hybrid P99 server-side: 39.7ms
+PASS — hybrid P99 < 50ms (39.7ms)
+
+╔══ CELL 10 — 5. Cleanup — stop the API server
+
+┌── CELL 11 (code)
+API server stopped
+
+╔══ CELL 12 — Deliverable evidence

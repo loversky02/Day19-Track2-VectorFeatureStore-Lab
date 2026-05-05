@@ -33,7 +33,7 @@ docker = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["app", "scripts"]
+testpaths = ["app", "scripts", "tests"]
 python_files = ["test_*.py"]
 
 [tool.ruff]

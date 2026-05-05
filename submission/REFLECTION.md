@@ -35,5 +35,5 @@ Hybrid không thắng rõ ràng trên paraphrase queries — dù semantic kém, 
 
 ## Bonus challenge
 
-- [ ] Đã làm bonus (xem `bonus/`)
-- [ ] Pair work với: _<tên đồng đội nếu có>_
+- [x] Đã làm bonus (xem `submission/bonus/`)
+- [x] Làm cá nhân

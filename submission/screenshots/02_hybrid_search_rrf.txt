@@ -1,0 +1,44 @@
+======================================================================
+  Notebook: 02_hybrid_search_rrf.ipynb
+======================================================================
+
+╔══ CELL 0 — NB2 — Hybrid Search: BM25 + Vector + RRF
+
+┌── CELL 1 (code)
+/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/.venv/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+
+╔══ CELL 2 — 1. Reload corpus + build both indices
+
+┌── CELL 3 (code)
+BM25 + vector indices ready (1000 docs)
+
+╔══ CELL 4 — 2. Per-mode search functions
+
+╔══ CELL 6 — 3. TODO — implement Reciprocal Rank Fusion
+
+┌── CELL 7 (code)
+Query: co giãn linh hoạt theo nhu cầu sử dụng
+  keyword top-3:  ['mobile_082', 'mobile_093', 'mobile_092']
+  semantic top-3: ['ai_ml_048', 'cloud_053', 'ai_ml_025']
+  hybrid top-3:   ['cloud_016', 'mobile_082', 'ai_ml_048']
+
+╔══ CELL 8 — 4. Đánh giá trên golden set (50 queries)
+
+┌── CELL 9 (code)
+Precision@10 (avg over 50 queries):
+  Keyword (BM25)   : 77.8%
+  Semantic (vector): 73.2%
+  Hybrid  (RRF=60) : 78.6%   <- should win
+
+╔══ CELL 10 — 5. Slice theo loại query
+
+┌── CELL 11 (code)
+  type           n       kw     sem     hyb
+  exact         15   96.7%  88.7%  96.7%
+  paraphrase    15   33.3%  24.0%  32.0%
+  mixed         20   97.0%  98.5% 100.0%
+
+╔══ CELL 12 — Diễn giải kết quả
+
+╔══ CELL 13 — Deliverable evidence

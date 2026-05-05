@@ -1,0 +1,164 @@
+======================================================================
+  Notebook: 04_feast_feature_store.ipynb
+======================================================================
+
+╔══ CELL 0 — NB4 — Feast Feature Store: 3 Feature Views
+
+╔══ CELL 2 — 1. Sinh dữ liệu offline (Parquet) cho 3 feature views
+
+┌── CELL 3 (code)
+Wrote 3 Parquet sources to /home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data
+  item_popularity.parquet  9.7 KB
+  query_velocity.parquet  2.3 KB
+  user_profile.parquet  2.8 KB
+
+╔══ CELL 4 — 2. `feast apply` — register 3 feature views với metadata registry
+
+┌── CELL 5 (code)
+STDOUT:
+No project found in the repository. Using project name lab19 defined in feature_store.yaml
+Applying changes for project lab19
+Updated feature view user_profile_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/user_profile.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "user_profile_source"
+meta {
+  created_timestamp {
+    seconds: 1777949253
+    nanos: 459163000
+  }
+  last_updated_timestamp {
+    seconds: 1777949253
+    nanos: 459163000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/user_profile.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "user_profile_source"
+meta {
+  created_timestamp {
+    seconds: 1777949266
+    nanos: 166696000
+  }
+  last_updated_timestamp {
+    seconds: 1777949266
+    nanos: 166696000
+  }
+}
+
+Updated feature view query_velocity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/query_velocity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "query_velocity_source"
+meta {
+  created_timestamp {
+    seconds: 1777949253
+    nanos: 459348000
+  }
+  last_updated_timestamp {
+    seconds: 1777949253
+    nanos: 459348000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/query_velocity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "query_velocity_source"
+meta {
+  created_timestamp {
+    seconds: 1777949266
+    nanos: 166920000
+  }
+  last_updated_timestamp {
+    seconds: 1777949266
+    nanos: 166920000
+  }
+}
+
+Updated feature view item_popularity_features
+	batch_source: type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/item_popularity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "item_popularity_source"
+meta {
+  created_timestamp {
+    seconds: 1777949253
+    nanos: 459261000
+  }
+  last_updated_timestamp {
+    seconds: 1777949253
+    nanos: 459261000
+  }
+}
+ -> type: BATCH_FILE
+timestamp_field: "event_timestamp"
+file_options {
+  uri: "/home/loversky/VINAI/Day19-Track2-VectorFeatureStore-Lab/app/feast_repo/data/item_popularity.parquet"
+}
+data_source_class_type: "feast.infra.offline_stores.file_source.FileSource"
+name: "item_popularity_source"
+meta {
+  created_timestamp {
+    seconds: 1777949266
+    nanos: 166822000
+  }
+  last_updated_timestamp {
+    seconds: 1777949266
+    nanos: 166822000
+  }
+}
+
+
+No changes to infrastructure
+
+╔══ CELL 6 — 3. `feast materialize-incremental` — load offline → online
+
+┌── CELL 7 (code)
+Materializing [1m[32m3[0m feature views to [1m[32m2026-05-05 02:47:43+00:00[0m into the [1m[32msqlite[0m online store.
+
+[1m[32mitem_popularity_features[0m from [1m[32m2026-05-05 02:47:30+00:00[0m to [1m[32m2026-05-05 02:47:43+00:00[0m:
+[1m[32mquery_velocity_features[0m from [1m[32m2026-05-05 02:47:30+00:00[0m to [1m[32m2026-05-05 02:47:43+00:00[0m:
+[1m[32muser_profile_features[0m from [1m[32m2026-05-05 02:47:30+00:00[0m to [1m[32m2026-05-05 02:47:43+00:00[0m:
+
+╔══ CELL 8 — 4. Online lookup — đo latency
+
+┌── CELL 9 (code)
+Single lookup: 24.46ms
+{'user_id': 'u_001', 'reading_speed_wpm': 187, 'preferred_language': 'vi', 'topic_affinity': 'cloud', 'distinct_topics_24h': 4, 'queries_last_hour': 11}
+
+╔══ CELL 10 — 5. TODO — Batch latency benchmark (100 lookups, P99)
+
+┌── CELL 11 (code)
+Online lookup latency over 100 calls:
+  P50 = 1.54ms
+  P95 = 2.86ms
+  P99 = 3.74ms
+PASS — online lookup P99 < 10ms (3.74ms)
+
+╔══ CELL 12 — 6. PIT join (offline) — đảm bảo no data leakage
+
+┌── CELL 13 (code)
+  user_id           event_timestamp  reading_speed_wpm topic_affinity
+0   u_003 2026-05-05 02:47:43+00:00                201       database
+1   u_002 2026-05-05 02:47:43+00:00                194       security
+2   u_001 2026-05-05 02:47:43+00:00                187          cloud
+
+╔══ CELL 14 — Deliverable evidence

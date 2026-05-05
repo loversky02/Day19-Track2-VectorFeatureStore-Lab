@@ -172,3 +172,19 @@ The separation follows the lab's own architecture: **Vector Store for retrieval,
 - **LLM integration** — `recall()` returns context string but doesn't call an actual LLM for final response
 - **Multi-device sync** — single-process, single-machine; no distributed Feast or Qdrant cluster
 - **Phonetic typo normalization** — queries without diacritics will miss BM25 matches entirely
+
+---
+
+## Notable Prompts (Vibe-coding Log)
+
+**Best prompt — Architecture decision formulation:**
+
+> "I'm designing a hybrid personal AI memory system. For user profile features (reading speed, topic affinity, language preference), should I use tabular Feast features or embed user history into a latent preference vector? Compare on: cold-start (0 interactions), query latency, interpretability, and update cost. Recommend one with explicit tradeoffs."
+
+Why effective: The prompt is narrow (specific pattern choice, not open-ended "design system"), includes constraints (4 comparison axes), and forces tradeoff reasoning. AI proposed 2 clear options with a decision matrix — I chose tabular based on cold-start and interpretability, exactly matching my architecture decision #2.
+
+**Worst prompt (early attempt, discarded):**
+
+> "Build an AI memory agent that remembers everything."
+
+Failed because: Scope was infinite — no spec on chunking, storage, latency, user isolation, or data flow. AI hallucinated an over-engineered system with Pinecone + Redis + Neo4j + LangChain, none of which mapped to lab concepts (Qdrant, Feast, RRF). Key lesson: **specs in, code out** (VIBE-CODING.md pattern #1). Rewrote the prompt as 3 narrow prompts — one per architecture decision — and got production-quality design.
